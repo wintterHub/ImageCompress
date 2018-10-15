@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.media.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="345.0" prefWidth="429.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MainController">
+	<children>
+      <TextField fx:id="fileChooseTextField" layoutX="74.0" layoutY="216.0" prefHeight="30.0" prefWidth="281.0" />
+      <Button fx:id="fileChooseButton" onAction="#showFileChooseDialog" layoutX="365.0" layoutY="216.0" mnemonicParsing="false" text="浏览" />
+      <Label layoutX="14.0" layoutY="221.0" text="保存到：" />
+	</children>
+</AnchorPane>

@@ -1,0 +1,2 @@
+基于JavaFX开发的图片压缩工具
+依赖thumbnailator.jar
