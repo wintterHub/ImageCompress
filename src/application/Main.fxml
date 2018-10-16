@@ -16,7 +16,7 @@
                   <ListView fx:id="fileListView" layoutX="51.0" layoutY="38.0" prefHeight="403.0" prefWidth="348.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
 						<Button layoutX="264.0" layoutY="356.0" mnemonicParsing="false" onAction="#showDirectoryChooseDialog" text="添加文件夹" />
 						<Button layoutX="27.0" layoutY="356.0" mnemonicParsing="false" text="删除选中" />
-						<Button layoutX="94.0" layoutY="356.0" mnemonicParsing="false" text="清空列表" />
+						<Button layoutX="99.0" layoutY="356.0" mnemonicParsing="false" onAction="#clearList" text="清空列表" />
 						<Button layoutX="187.0" layoutY="356.0" mnemonicParsing="false" onAction="#showFileChooseDialog" prefHeight="16.0" prefWidth="71.0" text="添加文件" />
 					</children>
 				</AnchorPane>
@@ -26,7 +26,7 @@
 						<Button layoutX="208.0" layoutY="132.0" mnemonicParsing="false" onAction="#showFileSaveDialog" text="浏览" />
 						<RadioButton layoutX="68.0" layoutY="186.0" mnemonicParsing="false" text="覆盖" />
 						<RadioButton layoutX="68.0" layoutY="101.0" mnemonicParsing="false" text="保存到" />
-						<Button layoutX="96.0" layoutY="253.0" mnemonicParsing="false" onAction="#startCompress" prefHeight="23.0" prefWidth="188.0" text="开始压缩" />
+						<Button layoutX="80.0" layoutY="305.0" mnemonicParsing="false" onAction="#startCompress" prefHeight="23.0" prefWidth="188.0" text="开始压缩" />
 					</children>
 				</AnchorPane>
 			</items>

@@ -64,4 +64,9 @@ public class MainController implements Initializable {
 		}
 	}
 
+	public void clearList(ActionEvent event) {
+		fileListView.setItems(null);
+		fileList = null;
+	}
+
 }
