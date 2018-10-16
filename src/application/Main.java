@@ -7,8 +7,12 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Main extends Application {
+
+	private Stage primaryStage;
+
 	@Override
 	public void start(Stage primaryStage) {
+		this.primaryStage = primaryStage;
 		try {
 			Parent root = FXMLLoader.load(getClass().getResource("/application/Main.fxml"));
 			primaryStage.setTitle("图片压缩");
@@ -21,5 +25,9 @@ public class Main extends Application {
 
 	public static void main(String[] args) {
 		launch(args);
+	}
+
+	public Stage getPrimaryStage() {
+		return this.primaryStage;
 	}
 }
