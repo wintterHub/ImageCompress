@@ -19,7 +19,7 @@ public class MainBL {
 	public static void compress(List<File> fileList, float scale, float outputQuality, String outputPath) {
 		try {
 			for (File f : fileList) {
-				if (outputPath.isEmpty()) {
+				if (outputPath == null || outputPath.isEmpty()) {
 					Thumbnails.of(f.getPath()).scale(scale).outputQuality(outputQuality).toFile(f.getPath());
 				} else {
 					Thumbnails.of(f.getPath()).scale(scale).outputQuality(outputQuality)

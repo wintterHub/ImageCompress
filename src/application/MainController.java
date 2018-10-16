@@ -10,7 +10,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
@@ -23,13 +22,12 @@ public class MainController implements Initializable {
 	@FXML
 	private ListView<File> fileListView;
 
-	@FXML
-	private Button startCompressButton;
-
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		primaryStage = new Main().getPrimaryStage();
 	}
+
+	private List<File> fileList;
 
 	public void showFileChooseDialog(ActionEvent event) {
 		FileChooser fileChooser = new FileChooser();
@@ -38,6 +36,7 @@ public class MainController implements Initializable {
 				new FileChooser.ExtensionFilter("JPG", "*.jpg"), new FileChooser.ExtensionFilter("BMP", "*.bmp"),
 				new FileChooser.ExtensionFilter("PNG", "*.png"));
 		List<File> fileList = fileChooser.showOpenMultipleDialog(primaryStage);
+		this.fileList = fileList;
 		ObservableList<File> fileData = FXCollections.observableArrayList();
 		fileData.addAll(fileList);
 		fileListView.setItems(fileData);
@@ -55,6 +54,10 @@ public class MainController implements Initializable {
 		directoryChooser.setTitle("选择文件夹");
 		File showOpenDialog = directoryChooser.showDialog(primaryStage);
 		System.out.println(showOpenDialog);
+	}
+
+	public void startCompress(ActionEvent event) {
+		MainBL.compress(fileList, 1f, 0.3f, null);
 	}
 
 }

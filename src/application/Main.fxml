@@ -25,7 +25,7 @@
 						<Button layoutX="225.0" layoutY="76.0" mnemonicParsing="false" text="浏览" />
 						<RadioButton layoutX="40.0" layoutY="221.0" mnemonicParsing="false" text="覆盖" />
 						<RadioButton layoutX="132.0" layoutY="213.0" mnemonicParsing="false" text="保存到" />
-						<Button fx:id="startCompressButton" layoutX="29.0" layoutY="158.0" mnemonicParsing="false" prefHeight="23.0" prefWidth="188.0" text="开始压缩" />
+						<Button layoutX="29.0" layoutY="158.0" mnemonicParsing="false" onAction="#startCompress" prefHeight="23.0" prefWidth="188.0" text="开始压缩" />
 					</children>
 				</AnchorPane>
 			</items>
