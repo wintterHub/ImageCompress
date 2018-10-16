@@ -36,10 +36,12 @@ public class MainController implements Initializable {
 				new FileChooser.ExtensionFilter("JPG", "*.jpg"), new FileChooser.ExtensionFilter("BMP", "*.bmp"),
 				new FileChooser.ExtensionFilter("PNG", "*.png"));
 		List<File> fileList = fileChooser.showOpenMultipleDialog(primaryStage);
-		this.fileList = fileList;
-		ObservableList<File> fileData = FXCollections.observableArrayList();
-		fileData.addAll(fileList);
-		fileListView.setItems(fileData);
+		if (fileList != null) {
+			this.fileList = fileList;
+			ObservableList<File> fileData = FXCollections.observableArrayList();
+			fileData.addAll(fileList);
+			fileListView.setItems(fileData);
+		}
 	}
 
 	public void showFileSaveDialog(ActionEvent event) {
@@ -57,7 +59,9 @@ public class MainController implements Initializable {
 	}
 
 	public void startCompress(ActionEvent event) {
-		MainBL.compress(fileList, 1f, 0.3f, null);
+		if (fileList != null) {
+			MainBL.compress(fileList, 1f, 0.3f, null);
+		}
 	}
 
 }
