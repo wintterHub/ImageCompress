@@ -1,4 +1,4 @@
-package application;
+package application.main;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -14,7 +14,7 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
 		try {
-			Parent root = FXMLLoader.load(getClass().getResource("/application/Main.fxml"));
+			Parent root = FXMLLoader.load(getClass().getResource("/application/main/Main.fxml"));
 			primaryStage.setTitle("图片压缩");
 			primaryStage.setScene(new Scene(root));
 			primaryStage.show();
