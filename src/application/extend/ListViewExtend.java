@@ -27,4 +27,7 @@ public class ListViewExtend<T> {
 		fileListView.setItems(fileData);
 	}
 
+	public void clear() {
+		fileData.clear();
+	}
 }

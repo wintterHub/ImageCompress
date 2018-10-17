@@ -109,6 +109,7 @@ public class MainController implements Initializable {
 	 * @param event
 	 */
 	public void clearList(ActionEvent event) {
+		listViewExtend.clear();
 		fileListView.setItems(null);
 		fileList = null;
 	}
