@@ -10,7 +10,11 @@ import application.extend.ListViewExtend;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -32,15 +36,31 @@ public class MainController implements Initializable {
 	/* 保存路径 */
 	private File savePath;
 
+	/* 覆盖原文件按钮是否选中 */
+	private Boolean isOverWriteCheckBoxSelected = false;
+
+	private int clickCount = 0;
+
 	@FXML
 	private ListView<File> fileListView;
+
+	@FXML
+	private TextField savePathTextField;
+
+	@FXML
+	private CheckBox overWriteCheckBox;
+
+	@FXML
+	private Button savePathChooseButton;
+
+	@FXML
+	private Label messageTipLabel;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		primaryStage = new Main().getPrimaryStage();
 		fileListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 			currentFile = newValue;
-			System.out.println(newValue);
 		});
 	}
 
@@ -68,10 +88,10 @@ public class MainController implements Initializable {
 		DirectoryChooser directoryChooser = new DirectoryChooser();
 		directoryChooser.setTitle("保存");
 		savePath = directoryChooser.showDialog(primaryStage);
-		if (!savePath.exists()) {
-			savePath.mkdirs();
+		if (savePath != null) {
+			messageTipLabel.setText("");
+			savePathTextField.setText(savePath.getPath());
 		}
-		System.out.println(savePath);
 	}
 
 	/**
@@ -85,7 +105,24 @@ public class MainController implements Initializable {
 		File file = directoryChooser.showDialog(primaryStage);
 		fileList = MainBL.getFilelist(file);
 		listViewExtend.setItems(fileListView, fileList);
-		System.out.println(file);
+	}
+
+	/**
+	 * 覆盖文件复选框事件
+	 * 
+	 * @param event
+	 */
+	public void overWriteAction(ActionEvent event) {
+		if (overWriteCheckBox.isSelected()) {
+			messageTipLabel.setText("");
+			isOverWriteCheckBoxSelected = true;
+			savePathTextField.disableProperty().set(true);
+			savePathChooseButton.disableProperty().set(true);
+		} else {
+			isOverWriteCheckBoxSelected = false;
+			savePathTextField.disableProperty().set(false);
+			savePathChooseButton.disableProperty().set(false);
+		}
 	}
 
 	/**
@@ -94,12 +131,37 @@ public class MainController implements Initializable {
 	 * @param event
 	 */
 	public void startCompress(ActionEvent event) {
-		if (fileList != null) {
-			try {
-				MainBL.compress(fileList, 1f, 0.3f, savePath);
-			} catch (IOException e) {
-				e.printStackTrace();
+		clickCount++;
+		if (fileList != null && fileList.size() > 0) {
+			// 判断覆盖或者另存为
+			if (isOverWriteCheckBoxSelected) {
+				if (clickCount == 1) {
+					messageTipLabel.setText("覆盖文件模式请谨慎操作，需再次点击确认");
+				} else if (clickCount == 2) {
+					clickCount = 0;
+					messageTipLabel.setText("");
+					try {
+						MainBL.compress(fileList, 1f, 0.3f, null);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			} else {
+				if (savePath == null) {
+					messageTipLabel.setText("请选择目标文件夹");
+				} else {
+					if (!savePath.exists()) {
+						savePath.mkdirs();
+					}
+					try {
+						MainBL.compress(fileList, 1f, 0.3f, savePath);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
 			}
+		} else {
+			messageTipLabel.setText("请添加文件");
 		}
 	}
 
@@ -121,7 +183,6 @@ public class MainController implements Initializable {
 	 */
 	public void removeSelectedItem(ActionEvent event) {
 		listViewExtend.removeItem(fileListView, currentFile);
-		System.out.println(currentFile);
 	}
 
 }

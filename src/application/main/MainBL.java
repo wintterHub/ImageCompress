@@ -26,7 +26,8 @@ public class MainBL {
 			if (outputPath == null) {
 				Thumbnails.of(f.getPath()).scale(scale).outputQuality(outputQuality).toFile(f.getPath());
 			} else {
-				Thumbnails.of(f.getPath()).scale(scale).outputQuality(outputQuality).toFile(outputPath + f.getName());
+				Thumbnails.of(f.getPath()).scale(scale).outputQuality(outputQuality)
+						.toFile(outputPath + "/" + f.getName());
 			}
 		}
 	}
