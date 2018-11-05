@@ -17,6 +17,7 @@ public class Main extends Application {
 			Parent root = FXMLLoader.load(getClass().getResource("/application/main/Main.fxml"));
 			primaryStage.setTitle("图片压缩");
 			primaryStage.setScene(new Scene(root));
+			primaryStage.resizableProperty().set(false);
 			primaryStage.show();
 		} catch (Exception e) {
 			e.printStackTrace();

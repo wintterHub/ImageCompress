@@ -1,15 +1,34 @@
-package application.main;
+package Logic;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
 import net.coobird.thumbnailator.Thumbnails;
 
-public class MainBL {
+public class Compress extends Observable implements Runnable {
 
-	private static List<File> filelist = new ArrayList<File>();
+	private List<File> fileList;
+	private float scale;
+	private float outputQuality;
+	private File outputPath;
+
+	public Compress(List<File> fileList, float scale, float outputQuality, File outputPath) {
+		this.fileList = fileList;
+		this.scale = scale;
+		this.outputQuality = outputQuality;
+		this.outputPath = outputPath;
+	}
+
+	@Override
+	public void run() {
+		try {
+			compress(fileList, scale, outputQuality, outputPath);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * 图片压缩
@@ -20,8 +39,7 @@ public class MainBL {
 	 * @param outputPath    图片保存目录，为空时覆盖原文件
 	 * @throws IOException
 	 */
-	public static void compress(List<File> fileList, float scale, float outputQuality, File outputPath)
-			throws IOException {
+	private void compress(List<File> fileList, float scale, float outputQuality, File outputPath) throws IOException {
 		for (File f : fileList) {
 			if (outputPath == null) {
 				Thumbnails.of(f.getPath()).scale(scale).outputQuality(outputQuality).toFile(f.getPath());
@@ -30,24 +48,6 @@ public class MainBL {
 						.toFile(outputPath + "/" + f.getName());
 			}
 		}
-	}
-
-	/**
-	 * 递归遍历文件夹中所有文件
-	 * 
-	 * @param directory 需要遍历的文件夹
-	 * @return List<File>
-	 */
-	public static List<File> getFilelist(File file) {
-		if (file.isFile()) {
-			filelist.add(file);
-		} else if (file.isDirectory()) {
-			File[] listFiles = file.listFiles();
-			for (File listFile : listFiles) {
-				getFilelist(listFile);
-			}
-		}
-		return filelist;
 	}
 
 }

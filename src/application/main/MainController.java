@@ -1,19 +1,21 @@
 package application.main;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import Logic.Compress;
+import Logic.MainLogic;
+import application.extend.AlertExtend;
 import application.extend.ListViewExtend;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
@@ -54,7 +56,10 @@ public class MainController implements Initializable {
 	private Button savePathChooseButton;
 
 	@FXML
-	private Label messageTipLabel;
+	private Button startCompressButton;
+
+	@FXML
+	private ProgressBar compressProgressBar;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -89,7 +94,6 @@ public class MainController implements Initializable {
 		directoryChooser.setTitle("保存");
 		savePath = directoryChooser.showDialog(primaryStage);
 		if (savePath != null) {
-			messageTipLabel.setText("");
 			savePathTextField.setText(savePath.getPath());
 		}
 	}
@@ -103,7 +107,7 @@ public class MainController implements Initializable {
 		DirectoryChooser directoryChooser = new DirectoryChooser();
 		directoryChooser.setTitle("选择文件夹");
 		File file = directoryChooser.showDialog(primaryStage);
-		fileList = MainBL.getFilelist(file);
+		fileList = MainLogic.getFilelist(file);
 		listViewExtend.setItems(fileListView, fileList);
 	}
 
@@ -113,8 +117,9 @@ public class MainController implements Initializable {
 	 * @param event
 	 */
 	public void overWriteAction(ActionEvent event) {
+		clickCount = 0;
+		startCompressButton.setText("开始压缩");
 		if (overWriteCheckBox.isSelected()) {
-			messageTipLabel.setText("");
 			isOverWriteCheckBoxSelected = true;
 			savePathTextField.disableProperty().set(true);
 			savePathChooseButton.disableProperty().set(true);
@@ -131,37 +136,35 @@ public class MainController implements Initializable {
 	 * @param event
 	 */
 	public void startCompress(ActionEvent event) {
-		clickCount++;
 		if (fileList != null && fileList.size() > 0) {
 			// 判断覆盖或者另存为
 			if (isOverWriteCheckBoxSelected) {
+				clickCount++;
 				if (clickCount == 1) {
-					messageTipLabel.setText("覆盖文件模式请谨慎操作，需再次点击确认");
+					startCompressButton.setText("请再次点击按钮开始压缩");
 				} else if (clickCount == 2) {
 					clickCount = 0;
-					messageTipLabel.setText("");
-					try {
-						MainBL.compress(fileList, 1f, 0.3f, null);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+					startCompressButton.setText("正在压缩...");
+					compressProgressBar.setProgress(50.00);
+					Compress compress = new Compress(fileList, 1f, 0.3f, null);
+					new Thread(compress).start();
+					startCompressButton.setText("开始压缩");
 				}
 			} else {
 				if (savePath == null) {
-					messageTipLabel.setText("请选择目标文件夹");
+					AlertExtend.showInformation(null, "请选择目标文件夹");
 				} else {
 					if (!savePath.exists()) {
 						savePath.mkdirs();
 					}
-					try {
-						MainBL.compress(fileList, 1f, 0.3f, savePath);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+					startCompressButton.setText("正在压缩...");
+					Compress compress = new Compress(fileList, 1f, 0.3f, savePath);
+					new Thread(compress).start();
+					startCompressButton.setText("开始压缩");
 				}
 			}
 		} else {
-			messageTipLabel.setText("请添加文件");
+			AlertExtend.showInformation(null, "请先添加文件");
 		}
 	}
 
@@ -183,6 +186,13 @@ public class MainController implements Initializable {
 	 */
 	public void removeSelectedItem(ActionEvent event) {
 		listViewExtend.removeItem(fileListView, currentFile);
+	}
+
+	/**
+	 * 高级设置
+	 */
+	public void advancedConfig() {
+		AlertExtend.showInformation(null, "高级功能尚开发");
 	}
 
 }
