@@ -5,10 +5,11 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import Logic.Compress;
-import Logic.MainLogic;
 import application.extend.AlertExtend;
 import application.extend.ListViewExtend;
+import application.logic.Compress;
+import application.logic.CompressObserver;
+import application.logic.MainLogic;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -41,6 +42,7 @@ public class MainController implements Initializable {
 	/* 覆盖原文件按钮是否选中 */
 	private Boolean isOverWriteCheckBoxSelected = false;
 
+	/* 开始压缩按钮点击计数 */
 	private int clickCount = 0;
 
 	@FXML
@@ -78,10 +80,18 @@ public class MainController implements Initializable {
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("选择文件");
 		fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("所有文件", "*.*"),
-				new FileChooser.ExtensionFilter("JPG", "*.jpg"), new FileChooser.ExtensionFilter("BMP", "*.bmp"),
-				new FileChooser.ExtensionFilter("PNG", "*.png"));
-		fileList = fileChooser.showOpenMultipleDialog(primaryStage);
-		listViewExtend.setItems(fileListView, fileList);
+				new FileChooser.ExtensionFilter("JPG", "*.jpg"), new FileChooser.ExtensionFilter("JPEG", "*.jpeg"),
+				new FileChooser.ExtensionFilter("PNG", "*.png"), new FileChooser.ExtensionFilter("BMP", "*.bmp"));
+		List<File> fList = fileChooser.showOpenMultipleDialog(primaryStage);
+
+		if (fList != null && fList.size() > 0) {
+			fileList = fList;
+			if (MainLogic.hasNonImage(fileList)) {
+				fileList = MainLogic.nonImageFilte(fileList);
+				AlertExtend.showInformation(null, "存在不支持的文件格式，已自动过滤");
+			}
+			listViewExtend.setItems(fileListView, fileList);
+		}
 	}
 
 	/**
@@ -92,8 +102,9 @@ public class MainController implements Initializable {
 	public void showFileSaveDialog(ActionEvent event) {
 		DirectoryChooser directoryChooser = new DirectoryChooser();
 		directoryChooser.setTitle("保存");
-		savePath = directoryChooser.showDialog(primaryStage);
-		if (savePath != null) {
+		File sPath = directoryChooser.showDialog(primaryStage);
+		if (sPath != null && sPath.exists() && sPath.isDirectory()) {
+			savePath = sPath;
 			savePathTextField.setText(savePath.getPath());
 		}
 	}
@@ -107,12 +118,22 @@ public class MainController implements Initializable {
 		DirectoryChooser directoryChooser = new DirectoryChooser();
 		directoryChooser.setTitle("选择文件夹");
 		File file = directoryChooser.showDialog(primaryStage);
-		fileList = MainLogic.getFilelist(file);
-		listViewExtend.setItems(fileListView, fileList);
+
+		if (file != null && file.exists() && file.isDirectory()) {
+			List<File> fList = MainLogic.getFilelist(file);
+			if (fList != null && fList.size() > 0) {
+				fileList = fList;
+				if (MainLogic.hasNonImage(fileList)) {
+					fileList = MainLogic.nonImageFilte(fileList);
+					AlertExtend.showInformation(null, "存在不支持的文件格式，已自动过滤");
+				}
+				listViewExtend.setItems(fileListView, fileList);
+			}
+		}
 	}
 
 	/**
-	 * 覆盖文件复选框事件
+	 * 覆盖原文件
 	 * 
 	 * @param event
 	 */
@@ -145,10 +166,27 @@ public class MainController implements Initializable {
 				} else if (clickCount == 2) {
 					clickCount = 0;
 					startCompressButton.setText("正在压缩...");
-					compressProgressBar.setProgress(50.00);
+					startCompressButton.disableProperty().set(true);
+					CompressObserver pgbCompressObs = new CompressObserver() {
+						@Override
+						public void onProgressChange(double progress) {
+							compressProgressBar.setProgress(progress);
+						}
+					};
+					CompressObserver btnCompressObs = new CompressObserver() {
+						@Override
+						public void onProgressChange(double progress) {
+							if (progress == 1) {
+								startCompressButton.setText("开始压缩");
+								startCompressButton.disableProperty().set(false);
+								AlertExtend.showInformation(null, "压缩完成");
+							}
+						}
+					};
 					Compress compress = new Compress(fileList, 1f, 0.3f, null);
+					compress.addObserver(pgbCompressObs);
+					compress.addObserver(btnCompressObs);
 					new Thread(compress).start();
-					startCompressButton.setText("开始压缩");
 				}
 			} else {
 				if (savePath == null) {
@@ -158,9 +196,27 @@ public class MainController implements Initializable {
 						savePath.mkdirs();
 					}
 					startCompressButton.setText("正在压缩...");
+					startCompressButton.disableProperty().set(true);
+					CompressObserver pgbCompressObs = new CompressObserver() {
+						@Override
+						public void onProgressChange(double progress) {
+							compressProgressBar.setProgress(progress);
+						}
+					};
+					CompressObserver btnCompressObs = new CompressObserver() {
+						@Override
+						public void onProgressChange(double progress) {
+							if (progress == 1) {
+								startCompressButton.setText("开始压缩");
+								startCompressButton.disableProperty().set(false);
+								AlertExtend.showInformation(null, "压缩完成");
+							}
+						}
+					};
 					Compress compress = new Compress(fileList, 1f, 0.3f, savePath);
+					compress.addObserver(pgbCompressObs);
+					compress.addObserver(btnCompressObs);
 					new Thread(compress).start();
-					startCompressButton.setText("开始压缩");
 				}
 			}
 		} else {

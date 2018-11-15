@@ -1,4 +1,4 @@
-package Logic;
+package application.logic;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +13,7 @@ public class Compress extends Observable implements Runnable {
 	private float scale;
 	private float outputQuality;
 	private File outputPath;
+	private double progress;
 
 	public Compress(List<File> fileList, float scale, float outputQuality, File outputPath) {
 		this.fileList = fileList;
@@ -40,14 +41,25 @@ public class Compress extends Observable implements Runnable {
 	 * @throws IOException
 	 */
 	private void compress(List<File> fileList, float scale, float outputQuality, File outputPath) throws IOException {
+		progress = 0;
+		double count = 0;
+		double size = fileList.size();
 		for (File f : fileList) {
+			count++;
 			if (outputPath == null) {
 				Thumbnails.of(f.getPath()).scale(scale).outputQuality(outputQuality).toFile(f.getPath());
 			} else {
 				Thumbnails.of(f.getPath()).scale(scale).outputQuality(outputQuality)
 						.toFile(outputPath + "/" + f.getName());
 			}
+			progress = count / size;
+			this.setChanged();
+			this.notifyObservers();
 		}
+	}
+
+	public double getProgress() {
+		return progress;
 	}
 
 }
