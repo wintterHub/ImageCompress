@@ -103,7 +103,7 @@ public class MainController implements Initializable {
 		DirectoryChooser directoryChooser = new DirectoryChooser();
 		directoryChooser.setTitle("保存");
 		File sPath = directoryChooser.showDialog(primaryStage);
-		if (sPath != null && sPath.exists() && sPath.isDirectory()) {
+		if (sPath != null) {
 			savePath = sPath;
 			savePathTextField.setText(savePath.getPath());
 		}
@@ -241,7 +241,7 @@ public class MainController implements Initializable {
 	 * @param event
 	 */
 	public void removeSelectedItem(ActionEvent event) {
-		listViewExtend.removeItem(fileListView, currentFile);
+		listViewExtend.removeItem(fileListView, fileList, currentFile);
 	}
 
 	/**

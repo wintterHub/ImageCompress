@@ -21,10 +21,13 @@ public class ListViewExtend<T> {
 		}
 	}
 
-	public void removeItem(ListView<T> fileListView, T item) {
+	public void removeItem(ListView<T> fileListView, List<T> fileList, T item) {
 		fileData = fileListView.getItems();
 		fileData.remove(item);
-		fileListView.setItems(fileData);
+
+//		for() {
+//			
+//		}
 	}
 
 	public void clear() {
