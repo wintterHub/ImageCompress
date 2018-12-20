@@ -10,6 +10,7 @@ import application.extend.ListViewExtend;
 import application.logic.Compress;
 import application.logic.CompressObserver;
 import application.logic.MainLogic;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -165,28 +166,7 @@ public class MainController implements Initializable {
 					startCompressButton.setText("请再次点击按钮开始压缩");
 				} else if (clickCount == 2) {
 					clickCount = 0;
-					startCompressButton.setText("正在压缩...");
-					startCompressButton.disableProperty().set(true);
-					CompressObserver pgbCompressObs = new CompressObserver() {
-						@Override
-						public void onProgressChange(double progress) {
-							compressProgressBar.setProgress(progress);
-						}
-					};
-					CompressObserver btnCompressObs = new CompressObserver() {
-						@Override
-						public void onProgressChange(double progress) {
-							if (progress == 1) {
-								startCompressButton.setText("开始压缩");
-								startCompressButton.disableProperty().set(false);
-								AlertExtend.showInformation(null, "压缩完成");
-							}
-						}
-					};
-					Compress compress = new Compress(fileList, 1f, 0.3f, null);
-					compress.addObserver(pgbCompressObs);
-					compress.addObserver(btnCompressObs);
-					new Thread(compress).start();
+					startCompressThread(null);
 				}
 			} else {
 				if (savePath == null) {
@@ -195,33 +175,44 @@ public class MainController implements Initializable {
 					if (!savePath.exists()) {
 						savePath.mkdirs();
 					}
-					startCompressButton.setText("正在压缩...");
-					startCompressButton.disableProperty().set(true);
-					CompressObserver pgbCompressObs = new CompressObserver() {
-						@Override
-						public void onProgressChange(double progress) {
-							compressProgressBar.setProgress(progress);
-						}
-					};
-					CompressObserver btnCompressObs = new CompressObserver() {
-						@Override
-						public void onProgressChange(double progress) {
-							if (progress == 1) {
-								startCompressButton.setText("开始压缩");
-								startCompressButton.disableProperty().set(false);
-								AlertExtend.showInformation(null, "压缩完成");
-							}
-						}
-					};
-					Compress compress = new Compress(fileList, 1f, 0.3f, savePath);
-					compress.addObserver(pgbCompressObs);
-					compress.addObserver(btnCompressObs);
-					new Thread(compress).start();
+					startCompressThread(savePath);
 				}
 			}
 		} else {
 			AlertExtend.showInformation(null, "请先添加文件");
 		}
+	}
+
+	private void startCompressThread(File savePath) {
+		startCompressButton.setText("正在压缩...");
+		startCompressButton.disableProperty().set(true);
+		CompressObserver pgbCompressObs = new CompressObserver() {
+			@Override
+			public void onProgressChange(double progress) {
+				compressProgressBar.setProgress(progress);
+			}
+		};
+		CompressObserver btnCompressObs = new CompressObserver() {
+			@Override
+			public void onProgressChange(double progress) {
+				if (progress == 1) {
+					Platform.runLater(new Runnable() {
+						@Override
+						public void run() {
+							// setText和弹窗如果不写Platform.runLater()这里面会报错
+							startCompressButton.setText("开始压缩");
+							AlertExtend.showInformation(null, "压缩完成");
+							compressProgressBar.setProgress(0.0);
+						}
+					});
+					startCompressButton.disableProperty().set(false);
+				}
+			}
+		};
+		Compress compress = new Compress(fileList, 1f, 0.3f, savePath);
+		compress.addObserver(pgbCompressObs);
+		compress.addObserver(btnCompressObs);
+		new Thread(compress).start();
 	}
 
 	/**
