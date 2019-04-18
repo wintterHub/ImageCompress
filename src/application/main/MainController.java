@@ -1,6 +1,7 @@
 package application.main;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -13,7 +14,10 @@ import application.logic.MainLogic;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListView;
@@ -239,7 +243,16 @@ public class MainController implements Initializable {
 	 * 高级设置
 	 */
 	public void advancedConfig() {
-		AlertExtend.showInformation(null, "高级功能尚开发");
+		Parent target = null;
+		try {
+			target = FXMLLoader.load(getClass().getResource("Advanced.fxml"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		} // 载入窗口Advanced的定义文件
+		Scene scene = new Scene(target); // 创建场景
+		Stage stg = new Stage();// 创建舞台
+		stg.setScene(scene); // 将场景载入舞台
+		stg.show(); // 显示窗口
 	}
 
 }
