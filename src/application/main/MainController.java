@@ -12,6 +12,8 @@ import application.logic.Compress;
 import application.logic.CompressObserver;
 import application.logic.MainLogic;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -68,11 +70,38 @@ public class MainController implements Initializable {
 	@FXML
 	private ProgressBar compressProgressBar;
 
+	@FXML
+	private TextField scaleTextField;
+
+	@FXML
+	private TextField qualityTextField;
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		primaryStage = new Main().getPrimaryStage();
 		fileListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 			currentFile = newValue;
+		});
+
+		scaleTextField.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				if (!newValue.matches("\\d*")) {
+					scaleTextField.setText(newValue.replaceAll("[^\\d]", ""));
+				}
+			}
+		});
+
+		qualityTextField.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				if (!newValue.matches("\\d*")) {
+					qualityTextField.setText(newValue.replaceAll("[^\\d]", ""));
+				}
+				if (Integer.parseInt(newValue) > 100) {
+					qualityTextField.setText(newValue.substring(0, newValue.length() - 1));
+				}
+			}
 		});
 	}
 
@@ -187,6 +216,8 @@ public class MainController implements Initializable {
 		}
 	}
 
+	private Boolean theadNormalStopFlag = false;
+
 	private void startCompressThread(File savePath) {
 		startCompressButton.setText("正在压缩...");
 		startCompressButton.disableProperty().set(true);
@@ -207,16 +238,34 @@ public class MainController implements Initializable {
 							startCompressButton.setText("开始压缩");
 							AlertExtend.showInformation(null, "压缩完成");
 							compressProgressBar.setProgress(0.0);
+							Thread.currentThread().interrupt();
 						}
 					});
 					startCompressButton.disableProperty().set(false);
+					theadNormalStopFlag = true;
 				}
 			}
 		};
-		Compress compress = new Compress(fileList, 1f, 0.3f, savePath);
+		Float scaleValue = Float.parseFloat(scaleTextField.getText().equals("") ? "100" : scaleTextField.getText())
+				/ 100;
+		Float qualityValue = Float.parseFloat(qualityTextField.getText().equals("") ? "30" : qualityTextField.getText())
+				/ 100;
+
+		Compress compress = new Compress(fileList, scaleValue, qualityValue, savePath);
 		compress.addObserver(pgbCompressObs);
 		compress.addObserver(btnCompressObs);
-		new Thread(compress).start();
+		Thread thread = new Thread(compress);
+		thread.start();
+		while (thread.isAlive()) {
+			// TODO 此处循环导致界面视图不更新
+		}
+		if (!theadNormalStopFlag) {
+			startCompressButton.setText("开始压缩");
+			compressProgressBar.setProgress(0.0);
+			startCompressButton.disableProperty().set(false);
+			AlertExtend.showInformation(null, "线程异常结束,可能是“缩放”或“质量”参数设置异常");
+		}
+
 	}
 
 	/**

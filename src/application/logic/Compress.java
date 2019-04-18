@@ -26,7 +26,7 @@ public class Compress extends Observable implements Runnable {
 	public void run() {
 		try {
 			compress(fileList, scale, outputQuality, outputPath);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -38,9 +38,9 @@ public class Compress extends Observable implements Runnable {
 	 * @param scale         图片缩放，大于1表示放大，小于1表示缩小
 	 * @param outputQuality 输出的图片质量，范围：0.0~1.0，1为最高质量
 	 * @param outputPath    图片保存目录，为空时覆盖原文件
-	 * @throws IOException
+	 * @throws Exception
 	 */
-	private void compress(List<File> fileList, float scale, float outputQuality, File outputPath) throws IOException {
+	private void compress(List<File> fileList, float scale, float outputQuality, File outputPath) throws Exception {
 		progress = 0;
 		double count = 0;
 		double size = fileList.size();
