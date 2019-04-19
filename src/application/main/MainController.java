@@ -1,7 +1,6 @@
 package application.main;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -16,10 +15,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListView;
@@ -75,6 +71,9 @@ public class MainController implements Initializable {
 
 	@FXML
 	private TextField qualityTextField;
+
+	@FXML
+	private Button aboutButton;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -176,11 +175,11 @@ public class MainController implements Initializable {
 		startCompressButton.setText("开始压缩");
 		if (overWriteCheckBox.isSelected()) {
 			isOverWriteCheckBoxSelected = true;
-			savePathTextField.disableProperty().set(true);
+//			savePathTextField.disableProperty().set(true);
 			savePathChooseButton.disableProperty().set(true);
 		} else {
 			isOverWriteCheckBoxSelected = false;
-			savePathTextField.disableProperty().set(false);
+//			savePathTextField.disableProperty().set(false);
 			savePathChooseButton.disableProperty().set(false);
 		}
 	}
@@ -294,19 +293,10 @@ public class MainController implements Initializable {
 	}
 
 	/**
-	 * 高级设置
+	 * 关于
 	 */
-	public void advancedConfig() {
-		Parent target = null;
-		try {
-			target = FXMLLoader.load(getClass().getResource("Advanced.fxml"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		} // 载入窗口Advanced的定义文件
-		Scene scene = new Scene(target); // 创建场景
-		Stage stg = new Stage();// 创建舞台
-		stg.setScene(scene); // 将场景载入舞台
-		stg.show(); // 显示窗口
+	public void onAboutButtonClick() {
+		AlertExtend.showInformation(null, "Author:ZhaoChangjin");
 	}
 
 }
