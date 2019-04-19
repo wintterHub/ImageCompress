@@ -216,25 +216,25 @@ public class MainController implements Initializable {
 		}
 	}
 
-	private Boolean theadNormalStopFlag = false;
-
 	private void startCompressThread(File savePath) {
 		startCompressButton.setText("正在压缩...");
 		startCompressButton.disableProperty().set(true);
 		CompressObserver pgbCompressObs = new CompressObserver() {
+			// 压缩进度变化触发事件
 			@Override
 			public void onProgressChange(double progress) {
 				compressProgressBar.setProgress(progress);
 			}
 		};
 		CompressObserver btnCompressObs = new CompressObserver() {
+			// 压缩进度变化触发事件
 			@Override
 			public void onProgressChange(double progress) {
 				if (progress == 1) {
 					Platform.runLater(new Runnable() {
 						@Override
 						public void run() {
-							// setText和弹窗如果不写Platform.runLater()这里面会报错
+							// setText和弹窗如果不写Platform.runLater()这里面会报错，无法更新主线程UI
 							startCompressButton.setText("开始压缩");
 							AlertExtend.showInformation(null, "压缩完成");
 							compressProgressBar.setProgress(0.0);
@@ -242,7 +242,6 @@ public class MainController implements Initializable {
 						}
 					});
 					startCompressButton.disableProperty().set(false);
-					theadNormalStopFlag = true;
 				}
 			}
 		};
@@ -251,21 +250,27 @@ public class MainController implements Initializable {
 		Float qualityValue = Float.parseFloat(qualityTextField.getText().equals("") ? "30" : qualityTextField.getText())
 				/ 100;
 
-		Compress compress = new Compress(fileList, scaleValue, qualityValue, savePath);
-		compress.addObserver(pgbCompressObs);
-		compress.addObserver(btnCompressObs);
-		Thread thread = new Thread(compress);
-		thread.start();
-		while (thread.isAlive()) {
-			// TODO 此处循环导致界面视图不更新
-		}
-		if (!theadNormalStopFlag) {
-			startCompressButton.setText("开始压缩");
-			compressProgressBar.setProgress(0.0);
-			startCompressButton.disableProperty().set(false);
-			AlertExtend.showInformation(null, "线程异常结束,可能是“缩放”或“质量”参数设置异常");
-		}
-
+		Compress compress = new Compress() {
+			@Override
+			public void run() {
+				try {
+					this.compress(fileList, scaleValue, qualityValue, savePath);
+				} catch (Exception e) {
+					Platform.runLater(new Runnable() {
+						@Override
+						public void run() {
+							startCompressButton.setText("开始压缩");
+							AlertExtend.showError(null, e.getMessage());
+							compressProgressBar.setProgress(0.0);
+						}
+					});
+					startCompressButton.disableProperty().set(false);
+				}
+			}
+		};
+		compress.addObserver(pgbCompressObs);// 进度条订阅压缩进度变化
+		compress.addObserver(btnCompressObs);// 按钮订阅压缩进度变化
+		new Thread(compress).start();
 	}
 
 	/**

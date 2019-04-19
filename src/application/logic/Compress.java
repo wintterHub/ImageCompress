@@ -1,35 +1,17 @@
 package application.logic;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.Observable;
 
 import net.coobird.thumbnailator.Thumbnails;
 
-public class Compress extends Observable implements Runnable {
+/**
+ * 定义为抽象类，是为了让启动这个线程的类使用匿名内部类的方式实现run()方法，从而可以在捕获到线程异常后，方便的更新UI
+ */
+public abstract class Compress extends Observable implements Runnable {
 
-	private List<File> fileList;
-	private float scale;
-	private float outputQuality;
-	private File outputPath;
 	private double progress;
-
-	public Compress(List<File> fileList, float scale, float outputQuality, File outputPath) {
-		this.fileList = fileList;
-		this.scale = scale;
-		this.outputQuality = outputQuality;
-		this.outputPath = outputPath;
-	}
-
-	@Override
-	public void run() {
-		try {
-			compress(fileList, scale, outputQuality, outputPath);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 	/**
 	 * 图片压缩
@@ -40,7 +22,7 @@ public class Compress extends Observable implements Runnable {
 	 * @param outputPath    图片保存目录，为空时覆盖原文件
 	 * @throws Exception
 	 */
-	private void compress(List<File> fileList, float scale, float outputQuality, File outputPath) throws Exception {
+	public void compress(List<File> fileList, float scale, float outputQuality, File outputPath) throws Exception {
 		progress = 0;
 		double count = 0;
 		double size = fileList.size();
