@@ -10,20 +10,20 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="644.0" prefWidth="585.0" styleClass="background" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.main.MainController">
+<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="602.0" prefWidth="487.0" styleClass="background" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.main.MainController">
 	<children>
-		<TextField fx:id="savePathTextField" disable="true" editable="false" layoutX="98.0" layoutY="476.0" prefHeight="42.0" prefWidth="357.0" />
-		<Button fx:id="savePathChooseButton" layoutX="464.0" layoutY="476.0" mnemonicParsing="false" onAction="#showFileSaveDialog" text="浏览">
+		<TextField fx:id="savePathTextField" disable="true" editable="false" layoutX="75.0" layoutY="455.0" prefHeight="35.0" prefWidth="332.0" />
+		<Button fx:id="savePathChooseButton" layoutX="407.0" layoutY="455.0" mnemonicParsing="false" onAction="#showFileSaveDialog" text="浏览">
 			<font>
 				<Font size="18.0" />
 			</font>
 		</Button>
-		<Button fx:id="startCompressButton" layoutY="593.0" mnemonicParsing="false" onAction="#startCompress" prefHeight="51.0" prefWidth="585.0" text="开始压缩" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="593.0">
+		<Button fx:id="startCompressButton" layoutY="554.0" mnemonicParsing="false" onAction="#startCompress" prefHeight="48.0" prefWidth="487.0" text="开始压缩" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="554.0">
 			<font>
 				<Font size="18.0" />
 			</font>
 		</Button>
-		<CheckBox fx:id="overWriteCheckBox" layoutX="34.0" layoutY="543.0" mnemonicParsing="false" onAction="#overWriteAction" prefHeight="25.0" prefWidth="126.0" text="覆盖原文件">
+		<CheckBox fx:id="overWriteCheckBox" layoutX="14.0" layoutY="503.0" mnemonicParsing="false" onAction="#overWriteAction" prefHeight="25.0" prefWidth="126.0" text="覆盖原文件">
 			<font>
 				<Font size="18.0" />
 			</font>
@@ -34,55 +34,55 @@
 			</font>
 		</Label>
 		<ListView fx:id="fileListView" layoutY="48.0" prefHeight="330.0" prefWidth="585.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-		<Button layoutX="144.0" layoutY="410.0" mnemonicParsing="false" onAction="#showDirectoryChooseDialog" text="添加文件夹">
+		<Button layoutX="139.0" layoutY="410.0" mnemonicParsing="false" onAction="#showDirectoryChooseDialog" text="添加文件夹">
 			<font>
 				<Font size="18.0" />
 			</font>
 		</Button>
-		<Button layoutX="451.0" layoutY="410.0" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#removeSelectedItem" text="删除选中" AnchorPane.leftAnchor="451.0" AnchorPane.rightAnchor="0.0">
+		<Button layoutX="377.0" layoutY="410.0" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#removeSelectedItem" prefHeight="35.0" prefWidth="108.0" text="删除选中" AnchorPane.leftAnchor="377.0" AnchorPane.rightAnchor="1.0">
 			<font>
 				<Font size="18.0" />
 			</font>
 		</Button>
-		<Button layoutX="307.0" layoutY="410.0" mnemonicParsing="false" onAction="#clearList" text="清空列表">
+		<Button layoutX="266.0" layoutY="410.0" mnemonicParsing="false" onAction="#clearList" text="清空列表">
 			<font>
 				<Font size="18.0" />
 			</font>
 		</Button>
-		<Button layoutY="410.0" mnemonicParsing="false" onAction="#showFileChooseDialog" prefHeight="42.0" prefWidth="134.0" text="添加文件" AnchorPane.leftAnchor="0.0">
+		<Button layoutX="2.0" layoutY="410.0" mnemonicParsing="false" onAction="#showFileChooseDialog" prefHeight="35.0" prefWidth="134.0" text="添加文件" AnchorPane.leftAnchor="2.0">
 			<font>
 				<Font size="18.0" />
 			</font>
 		</Button>
-		<Label layoutX="32.0" layoutY="485.0" text="保存到" textFill="WHITE">
+		<Label layoutX="14.0" layoutY="460.0" text="保存到" textFill="WHITE">
 			<font>
 				<Font size="18.0" />
 			</font>
 		</Label>
 		<ProgressBar fx:id="compressProgressBar" layoutY="378.0" prefHeight="23.0" prefWidth="585.0" progress="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-      <TextField fx:id="scaleTextField" layoutX="237.0" layoutY="538.0" prefHeight="35.0" prefWidth="94.0" promptText="默认100" />
-      <TextField fx:id="qualityTextField" layoutX="435.0" layoutY="538.0" prefHeight="35.0" prefWidth="94.0" promptText="默认30" />
-      <Label layoutX="189.0" layoutY="543.0" prefHeight="24.0" prefWidth="37.0" text="缩放" textFill="WHITE">
+      <TextField fx:id="scaleTextField" layoutX="219.0" layoutY="501.0" prefHeight="35.0" prefWidth="72.0" promptText="默认100" />
+      <TextField fx:id="qualityTextField" layoutX="383.0" layoutY="501.0" prefHeight="35.0" prefWidth="72.0" promptText="默认30" />
+      <Label layoutX="172.0" layoutY="506.0" prefHeight="24.0" prefWidth="37.0" text="缩放" textFill="WHITE">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="388.0" layoutY="544.0" text="质量" textFill="WHITE">
+      <Label layoutX="336.0" layoutY="507.0" text="质量" textFill="WHITE">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="341.0" layoutY="545.0" text="\%" textFill="WHITE">
+      <Label layoutX="293.0" layoutY="507.0" text="\%" textFill="WHITE">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label layoutX="539.0" layoutY="544.0" text="\%" textFill="WHITE">
+      <Label layoutX="460.0" layoutY="507.0" text="\%" textFill="WHITE">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Button fx:id="aboutButton" layoutX="488.0" layoutY="3.0" mnemonicParsing="false" onAction="#onAboutButtonClick" prefHeight="0.0" prefWidth="94.0" text="关于" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="3.0" />
+      <Button fx:id="aboutButton" layoutX="387.0" layoutY="7.0" mnemonicParsing="false" onAction="#onAboutButtonClick" prefHeight="0.0" prefWidth="94.0" text="关于" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="7.0" />
 	</children>
    <stylesheets>
       <URL value="@JMetroBase.css" />
